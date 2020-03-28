@@ -1,4 +1,6 @@
-# python-auto-venv
+# Python Auto Venv
+
+![Python Auto Venv](https://raw.githubusercontent.com/Whinarn/vscode-python-auto-venv/master/images/logo.png)
 
 This extension will automatically set the Python virtual environment based on the file that you are currently editing.
 This is useful for workspaces that contain more than one project with their own virtual environment.
