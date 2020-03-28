@@ -3,6 +3,11 @@
     "displayName": "Python Auto Venv",
     "description": "Automatically selects the virtual environment found in the directory of your current file.",
     "version": "0.0.1",
+    "publisher": "whinarn",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Whinarn/vscode-python-auto-venv.git"
+    },
     "engines": {
         "vscode": "^1.43.0"
     },

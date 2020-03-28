@@ -1,9 +1,7 @@
 # Change Log
 
-All notable changes to the "python-auto-venv" extension will be documented in this file.
+All notable changes to the Python Auto Venv extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
+## v1.0.0 (2020-03-28)
 
 - Initial release
