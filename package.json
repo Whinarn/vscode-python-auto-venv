@@ -9,7 +9,7 @@
         "url": "https://github.com/Whinarn/vscode-python-auto-venv.git"
     },
     "license": "MIT",
-    "icon": "https://raw.githubusercontent.com/Whinarn/vscode-python-auto-venv/master/images/logo.png",
+    "icon": "images/logo.png",
     "author": {
         "name": "Mattias Edlund",
         "url": "https://github.com/Whinarn"
