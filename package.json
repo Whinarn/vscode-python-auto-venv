@@ -19,12 +19,37 @@
     ],
     "main": "./out/extension.js",
     "contributes": {
-        "commands": [
-            {
-                "command": "extension.helloWorld",
-                "title": "Hello World"
+        "configuration": {
+            "title": "Python Auto Venv",
+            "properties": {
+                "pythonautovenv.enable": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables or disables this extension."
+                },
+                "pythonautovenv.usePipenv": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If pipenv should be used to detect virtual environments."
+                },
+                "pythonautovenv.pipenvPath": {
+                    "type": "string",
+                    "default": "pipenv",
+                    "description": "The path to the pipenv executable."
+                },
+                "pythonautovenv.venvDirectoryNames": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        ".venv",
+                        "venv"
+                    ],
+                    "description": "The names of possible virtual environment directories."
+                }
             }
-        ]
+        }
     },
     "scripts": {
         "vscode:prepublish": "yarn run compile",
@@ -35,16 +60,20 @@
         "test": "node ./out/test/runTest.js"
     },
     "devDependencies": {
+        "@types/async": "^3.0.8",
         "@types/glob": "^7.1.1",
         "@types/mocha": "^7.0.1",
         "@types/node": "^12.11.7",
         "@types/vscode": "^1.43.0",
-        "eslint": "^6.8.0",
-        "@typescript-eslint/parser": "^2.18.0",
         "@typescript-eslint/eslint-plugin": "^2.18.0",
+        "@typescript-eslint/parser": "^2.18.0",
+        "eslint": "^6.8.0",
         "glob": "^7.1.6",
         "mocha": "^7.0.1",
         "typescript": "^3.7.5",
         "vscode-test": "^1.3.0"
+    },
+    "dependencies": {
+        "async": "^3.2.0"
     }
 }

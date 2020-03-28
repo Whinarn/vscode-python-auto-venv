@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { getEnable } from './settings';
 import { updateVirtualEnvironment } from './virtualEnvironment';
 
 const PYTHON_LANGUAGE_ID = 'python';
@@ -27,6 +28,12 @@ function onDidChangeActiveTextEditor(editor: vscode.TextEditor | undefined): voi
 
 function onDidChangeActiveTextDocument(document: vscode.TextDocument): void {
     if (!document.isUntitled && document.fileName.length && document.languageId === PYTHON_LANGUAGE_ID) {
+        const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
+        if (!workspaceFolder || !getEnable(workspaceFolder)) {
+            // Skip if the document is not in a workspace, or if this extension is disabled in the workspace
+            return;
+        }
+
         updateVirtualEnvironment(document);
     }
 }

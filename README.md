@@ -14,7 +14,12 @@ You **must** have the [Python](https://marketplace.visualstudio.com/items?itemNa
 
 ## Extension Settings
 
-This extension does currently not have any settings exposed.
+This extension contributes the following settings:
+
+* `pythonautovenv.enable`: enables or disables this extension (default: *true*)
+* `pythonautovenv.usePipenv`: if pipenv should be used to detect virtual environments (default: *false*)
+* `pythonautovenv.pipenvPath`: the path to the pipenv executable (default: *pipenv*)
+* `pythonautovenv.venvDirectoryNames`: the names of possible virtual environment directories (default: *[".venv", "venv"]*)
 
 ## Release Notes
 
