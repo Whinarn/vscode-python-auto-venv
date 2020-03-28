@@ -12,7 +12,8 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function onDidOpenTextDocument(document: vscode.TextDocument): void {
-    if (document === activeDocument) {
+    if (!activeDocument || document === activeDocument) {
+        activeDocument = document;
         activeDocumentFileName = document.fileName;
         onDidChangeActiveTextDocument(document);
     }

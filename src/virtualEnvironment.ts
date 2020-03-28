@@ -15,7 +15,6 @@ export function updateVirtualEnvironment(document: vscode.TextDocument): void {
     console.log('We must update the virtual environment!');
     console.log('Filename:', document.fileName);
 
-    // First check if we have to 
     const directoryPath = dirname(document.fileName);
     if (lastDirectoryPath === directoryPath) {
         return;
@@ -34,13 +33,16 @@ function findVirtualEnvironment(workspaceFolder: vscode.WorkspaceFolder, path: s
     const workspaceRootPath = workspaceFolder.uri.fsPath;
     const workspaceRootPathWithSlash = workspaceRootPath + '/';
 
-    while (path.startsWith(workspaceRootPathWithSlash) || path === workspaceRootPath) {
+    let currentPath = path;
+    while (currentPath.startsWith(workspaceRootPathWithSlash) || currentPath === workspaceRootPath) {
         for (let i = 0; i < VENV_DIR_NAMES.length; i++) {
-            let venvPythonPath = join(path, VENV_DIR_NAMES[i], 'bin', 'python');
+            let venvPythonPath = join(currentPath, VENV_DIR_NAMES[i], 'bin', 'python');
             if (existsSync(venvPythonPath)) {
                 return venvPythonPath;
             }
         }
+
+        currentPath = dirname(currentPath);
     }
 
     return undefined;
