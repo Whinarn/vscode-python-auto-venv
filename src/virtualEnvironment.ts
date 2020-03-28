@@ -37,7 +37,6 @@ export function updateVirtualEnvironment(document: vscode.TextDocument): void {
     }).catch((err) => {
         console.error('Failed to find virtual environment:', err);
     });
-    
 }
 
 async function findVirtualEnvironmentPythonPath(workspaceFolder: vscode.WorkspaceFolder, path: string): Promise<string | undefined> {
