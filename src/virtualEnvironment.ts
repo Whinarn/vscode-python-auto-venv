@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { dirname, join } from 'path';
-import { existsSync } from 'fs';
+import { dirname, join, sep } from 'path';
+import { fileExistsSync } from './fileUtils';
 
 const VENV_DIR_NAMES = ['.venv', 'venv'];
 let lastDirectoryPath: string | undefined;
@@ -19,30 +19,47 @@ export function updateVirtualEnvironment(document: vscode.TextDocument): void {
 
     lastDirectoryPath = directoryPath;
 
-    const pythonPath = findVirtualEnvironment(workspaceFolder, directoryPath);
+    const pythonPath = findVirtualEnvironmentPythonPath(workspaceFolder, directoryPath);
     if (pythonPath && pythonPath !== lastPythonPath) {
         lastPythonPath = pythonPath;
         setVirtualEnvironment(workspaceFolder, pythonPath);
     }
 }
 
-function findVirtualEnvironment(workspaceFolder: vscode.WorkspaceFolder, path: string): string | undefined {
+function findVirtualEnvironmentPythonPath(workspaceFolder: vscode.WorkspaceFolder, path: string): string | undefined {
     const workspaceRootPath = workspaceFolder.uri.fsPath;
-    const workspaceRootPathWithSlash = workspaceRootPath + '/';
+    const workspaceRootPathWithSlash = workspaceRootPath + sep;
 
     let currentPath = path;
     while (currentPath.startsWith(workspaceRootPathWithSlash) || currentPath === workspaceRootPath) {
-        for (let i = 0; i < VENV_DIR_NAMES.length; i++) {
-            let venvPythonPath = join(currentPath, VENV_DIR_NAMES[i], 'bin', 'python');
-            if (existsSync(venvPythonPath)) {
-                return venvPythonPath;
-            }
+        const pythonPath = findVirtualEnvironmentPythonPathInDirectory(currentPath);
+        if (pythonPath) {
+            return pythonPath;
         }
 
         currentPath = dirname(currentPath);
     }
 
     return undefined;
+}
+
+function findVirtualEnvironmentPythonPathInDirectory(path: string): string | undefined {
+    for (let i = 0; i < VENV_DIR_NAMES.length; i++) {
+        let pythonPath = getVirtualEnvironmentPythonPath(path, VENV_DIR_NAMES[i]);
+        if (fileExistsSync(pythonPath)) {
+            return pythonPath;
+        }
+    }
+
+    return undefined;
+}
+
+function getVirtualEnvironmentPythonPath(path: string, venvName: string): string {
+    if (process.platform === 'win32') {
+        return join(path, venvName, 'Scripts', 'python.exe');
+    } else {
+        return join(path, venvName, 'bin', 'python');
+    }
 }
 
 function setVirtualEnvironment(workspaceFolder: vscode.WorkspaceFolder, pythonPath: string): void {
