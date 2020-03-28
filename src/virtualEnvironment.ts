@@ -12,9 +12,6 @@ export function updateVirtualEnvironment(document: vscode.TextDocument): void {
         return;
     }
 
-    console.log('We must update the virtual environment!');
-    console.log('Filename:', document.fileName);
-
     const directoryPath = dirname(document.fileName);
     if (lastDirectoryPath === directoryPath) {
         return;
