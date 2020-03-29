@@ -11,29 +11,29 @@ export function setup(): vscode.OutputChannel {
 
 export function info(message: any, ...optionalParams: any[]): void {
     if (outputChannel) {
-        const text = getText('[INFO]', message, ...optionalParams);
+        const text = getText('[INFO]', message, optionalParams);
         outputChannel.appendLine(text);
     }
 }
 
 export function warn(message: any, ...optionalParams: any[]): void {
     if (outputChannel) {
-        const text = getText('[WARNING]', message, ...optionalParams);
+        const text = getText('[WARNING]', message, optionalParams);
         outputChannel.appendLine(text);
     }
 }
 
 export function error(message: any, ...optionalParams: any[]): void {
     if (outputChannel) {
-        const text = getText('[ERROR]', message, ...optionalParams);
+        const text = getText('[ERROR]', message, optionalParams);
         outputChannel.appendLine(text);
     }
 }
 
-function getText(level: string, message: any, ...optionalParams: any[]): string {
+function getText(level: string, message: any, optionalParams: any[]): string {
     return [
         level,
-        message.toString(),
+        message,
         ...optionalParams
     ].join(' ');
 }
