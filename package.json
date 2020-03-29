@@ -14,6 +14,13 @@
         "name": "Mattias Edlund",
         "url": "https://github.com/Whinarn"
     },
+    "badges": [
+        {
+            "url": "https://api.codacy.com/project/badge/Grade/17cbbbf142bd420f83e282530c33fdc2",
+            "href": "https://www.codacy.com/manual/Whinarn/vscode-python-auto-venv?utm_source=marketplace.visualstudio.com&amp;utm_medium=referral&amp;utm_content=Whinarn/vscode-python-auto-venv&amp;utm_campaign=Badge_Grade",
+            "description": "Codacy: code quality"
+        }
+    ],
     "engines": {
         "vscode": "^1.43.0"
     },
