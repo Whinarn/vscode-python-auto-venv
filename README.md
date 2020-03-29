@@ -1,5 +1,6 @@
 # Python Auto Venv
 
+[![VS Code Marketplace](https://vsmarketplacebadge.apphb.com/version/whinarn.python-auto-venv.svg)](https://marketplace.visualstudio.com/items?itemName=whinarn.python-auto-venv)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/17cbbbf142bd420f83e282530c33fdc2)](https://www.codacy.com/manual/Whinarn/vscode-python-auto-venv?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Whinarn/vscode-python-auto-venv&amp;utm_campaign=Badge_Grade)
 [![VS Code Marketplace](https://img.shields.io/vscode-marketplace/d/whinarn.python-auto-venv.svg)](https://marketplace.visualstudio.com/items?itemName=whinarn.python-auto-venv)
 [![Release](https://github.com/Whinarn/vscode-python-auto-venv/workflows/Release/badge.svg)](https://github.com/Whinarn/vscode-python-auto-venv/actions?query=workflow%3ARelease)
@@ -32,9 +33,3 @@ This extension contributes the following settings:
 * `pythonautovenv.usePipenv`: if pipenv should be used to detect virtual environments (default: *false*)
 * `pythonautovenv.pipenvPath`: the path to the pipenv executable (default: *pipenv*)
 * `pythonautovenv.venvDirectoryNames`: the names of possible virtual environment directories (default: *\[".venv", "venv"\]*)
-
-## Release Notes
-
-### 1.0.0
-
-Initial release of Python Auto Venv
