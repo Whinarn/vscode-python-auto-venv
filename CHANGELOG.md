@@ -1,7 +1,6 @@
-# Change Log
+## [v1.0.0](https://github.com/Whinarn/vscode-python-auto-venv/releases/tag/v1.0.0) (2020-03-29)
 
-All notable changes to the Python Auto Venv extension will be documented in this file.
 
-## v1.0.0 (2020-03-29)
+### Features
 
-- Initial release
+* automatic detection of virtual environments
