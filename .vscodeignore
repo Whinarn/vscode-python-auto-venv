@@ -1,9 +1,12 @@
+.github/**
 .vscode/**
 .vscode-test/**
 out/**
 src/**
 .gitignore
+.releaserc.json
 webpack.config.js
+yarn.lock
 **/tsconfig.json
 **/.eslintrc.json
 **/*.map
