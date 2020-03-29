@@ -7,6 +7,7 @@ Thank you for considering contributing to this project.
 Make sure to install all of the following:
 
 * [VS Code](https://code.visualstudio.com/Download)
+* [Node.js](https://nodejs.org/en/download/)
 * [Yarn](https://classic.yarnpkg.com/en/docs/install)
 
 After you have cloned this repository install all dependencies by typing the following in your terminal:
