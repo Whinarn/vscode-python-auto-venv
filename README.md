@@ -5,6 +5,8 @@
 This extension will automatically set the Python virtual environment based on the file that you are currently editing.
 This is useful for workspaces that contain more than one project with their own virtual environment.
 
+You can find it in the VS Code marketplace [here](https://marketplace.visualstudio.com/items?itemName=whinarn.python-auto-venv).
+
 ## Features
 
 By opening up a Python script, this extension will figure out the best suitable virtual environment to use based on where the file is located.
