@@ -3,6 +3,7 @@ import { dirname, join, sep } from 'path';
 import { exec } from 'child_process';
 import { getUsePipenv, getPipenvPath, getVenvDirectoryNames } from './settings';
 import { fileExists } from './fileUtils';
+import * as logger from './logger';
 
 let lastDirectoryPath: string | undefined;
 let lastPythonPath: string | undefined;
@@ -28,14 +29,14 @@ export function updateVirtualEnvironment(document: vscode.TextDocument): void {
                 try {
                     setVirtualEnvironment(workspaceFolder, pythonPath);
                 } catch (err) {
-                    console.error('Failed to set virtual environment:', err);
+                    logger.error('Failed to set virtual environment:', err);
                 }
             }
         } else {
-            console.warn('Unable to find virtual environment under directory:', directoryPath);
+            logger.warn('Unable to find virtual environment under directory:', directoryPath);
         }
     }).catch((err) => {
-        console.error('Failed to find virtual environment:', err);
+        logger.error('Failed to find virtual environment:', err);
     });
 }
 
@@ -116,5 +117,5 @@ function setVirtualEnvironment(workspaceFolder: vscode.WorkspaceFolder, pythonPa
     const pythonSettings = vscode.workspace.getConfiguration('python', workspaceFolder);
     pythonSettings.update('pythonPath', pythonPath);
 
-    console.log('Changed the virtual environment python path:', pythonPath);
+    logger.info('Changed the virtual environment python path:', pythonPath);
 }
