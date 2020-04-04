@@ -10,6 +10,8 @@ const DEFAULT_VENV_DIR_NAMES = ['.venv', 'venv'];
 const DEFAULT_INSTALL_VENV_FILES = ['Pipfile.lock', 'Pipfile', 'requirements-dev.txt', 'requirements.txt'];
 const DEFAULT_INSTALL_VENV_COMMAND = '';
 const DEFAULT_INSTALL_VENV_COMMAND_FOR_FILE = {};
+const DEFAULT_UNINSTALL_VENV_COMMAND = '';
+const DEFAULT_UNINSTALL_VENV_COMMAND_FOR_FILE = {};
 
 export type StringMap = { [key: string]: string; };
 
@@ -56,6 +58,16 @@ export function getInstallVenvCommand(workspaceFolder?: vscode.WorkspaceFolder):
 export function getInstallVenvCommandForFile(workspaceFolder?: vscode.WorkspaceFolder): StringMap {
     const settings = getSettings(workspaceFolder);
     return settings.get<StringMap>('installVenvCommandForFile', DEFAULT_INSTALL_VENV_COMMAND_FOR_FILE);
+}
+
+export function getUninstallVenvCommand(workspaceFolder?: vscode.WorkspaceFolder): string {
+    const settings = getSettings(workspaceFolder);
+    return settings.get<string>('uninstallVenvCommand', DEFAULT_UNINSTALL_VENV_COMMAND);
+}
+
+export function getUninstallVenvCommandForFile(workspaceFolder?: vscode.WorkspaceFolder): StringMap {
+    const settings = getSettings(workspaceFolder);
+    return settings.get<StringMap>('uninstallVenvCommandForFile', DEFAULT_UNINSTALL_VENV_COMMAND_FOR_FILE);
 }
 
 export function getSettings(workspaceFolder?: vscode.WorkspaceFolder): vscode.WorkspaceConfiguration {

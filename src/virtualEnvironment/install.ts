@@ -8,6 +8,7 @@ import { executeCommandBasic } from '../commandUtils';
 import * as logger from '../logger';
 import { prepareCustomCommand, CustomCommandOptions } from './commands';
 import { findVenvInstallFile } from './find';
+import { uninstallVirtualEnvironment } from './uninstall';
 
 export async function installVirtualEnvironment(document: vscode.TextDocument): Promise<void> {
     const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
@@ -21,6 +22,9 @@ export async function installVirtualEnvironment(document: vscode.TextDocument): 
         logger.info('Unable to find virtual environment project to install based on path:', directoryPath);
         return;
     }
+
+    // Uninstall any existing environment first
+    await uninstallVirtualEnvironment(document);
 
     const venvProjectPath = path.dirname(venvInstallFilePath);
     const installCommand = getInstallCommand(workspaceFolder, {

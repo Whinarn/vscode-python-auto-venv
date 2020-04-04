@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { getEnable } from './settings';
 import { installVirtualEnvironment } from './virtualEnvironment/install';
+import { uninstallVirtualEnvironment } from './virtualEnvironment/uninstall';
 import { setVirtualEnvironment } from './virtualEnvironment/set';
 import * as logger from './logger';
 
@@ -12,6 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
     logger.info('Python Auto Venv activated!');
 
     context.subscriptions.push(vscode.commands.registerCommand('pythonautovenv.installVenv', onInstallVirtualEnvironmentCommand));
+    context.subscriptions.push(vscode.commands.registerCommand('pythonautovenv.uninstallVenv', onUninstallVirtualEnvironmentCommand));
 
     context.subscriptions.push(vscode.workspace.onDidOpenTextDocument(onDidOpenTextDocument));
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor));
@@ -32,6 +34,21 @@ function onInstallVirtualEnvironmentCommand(): void {
         });
     } else {
         vscode.window.showErrorMessage('Unable to install virtual environment because no saved python editor is currently active.');
+    }
+}
+
+function onUninstallVirtualEnvironmentCommand(): void {
+    if (activeDocument && isSavedPythonDocument(activeDocument)) {
+        uninstallVirtualEnvironment(activeDocument).then((success) => {
+            if (!success) {
+                vscode.window.showErrorMessage('The virtual environment was not uninstalled because it wasn\'t found.');
+            }
+        }).catch((err) => {
+            logger.error('Failed to uninstall virtual environment:', err);
+            vscode.window.showErrorMessage('Failed to uninstall virtual environment:', err);
+        });
+    } else {
+        vscode.window.showErrorMessage('Unable to uninstall virtual environment because no saved python editor is currently active.');
     }
 }
 

@@ -32,6 +32,13 @@ export async function isVenvDirectory(dirPath: string): Promise<boolean> {
     return false;
 }
 
+export async function isInsideVenvDirectory(venvPath: string, filePath: string): Promise<boolean> {
+    const resolvedVenvPath = path.resolve(venvPath);
+    const resolvedFilePath = path.resolve(filePath);
+    const venvPathWithSlash = addTrailingDirectorySeparator(resolvedVenvPath);
+    return resolvedFilePath.startsWith(venvPathWithSlash);
+}
+
 export async function findVenvPath(workspaceFolder: vscode.WorkspaceFolder, dirPath: string): Promise<string | undefined> {
     const preferPipenv = settings.getPreferPipenv(workspaceFolder);
     if (preferPipenv) {

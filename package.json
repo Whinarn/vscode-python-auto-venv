@@ -35,6 +35,7 @@
     ],
     "activationEvents": [
         "onCommand:pythonautovenv.installVenv",
+        "onCommand:pythonautovenv.uninstallVenv",
         "onLanguage:python"
     ],
     "main": "./dist/extension.js",
@@ -43,6 +44,12 @@
             {
                 "command": "pythonautovenv.installVenv",
                 "title": "Install Virtual Environment",
+                "category": "Python Auto Venv",
+                "enablement": "editorLangId == python"
+            },
+            {
+                "command": "pythonautovenv.uninstallVenv",
+                "title": "Uninstall Virtual Environment",
                 "category": "Python Auto Venv",
                 "enablement": "editorLangId == python"
             }
@@ -111,6 +118,19 @@
                     },
                     "default": {},
                     "description": "The command to use to install virtual environments per file detected. This allows you to use a different command to install a specific file configured in 'pythonautovenv.installVenvFiles' once detected."
+                },
+                "pythonautovenv.uninstallVenvCommand": {
+                    "type": "string",
+                    "default": "",
+                    "description": "The command to use to uninstall virtual environments. An empty string will use the default command, which you can read more about in the readme."
+                },
+                "pythonautovenv.uninstallVenvCommandForFile": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "default": {},
+                    "description": "The command to use to uninstall virtual environments per file detected. This allows you to use a different command to uninstall a specific file configured in 'pythonautovenv.installVenvFiles' once detected."
                 }
             }
         }
