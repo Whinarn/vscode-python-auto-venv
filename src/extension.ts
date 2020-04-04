@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { getEnable } from './settings';
+import { installVirtualEnvironment } from './virtualEnvironment/install';
 import { setVirtualEnvironment } from './virtualEnvironment/set';
 import * as logger from './logger';
 
@@ -10,11 +11,28 @@ export function activate(context: vscode.ExtensionContext) {
     const outputChannel = logger.setup();
     logger.info('Python Auto Venv activated!');
 
+    context.subscriptions.push(vscode.commands.registerCommand('pythonautovenv.installVenv', onInstallVirtualEnvironmentCommand));
+
     context.subscriptions.push(vscode.workspace.onDidOpenTextDocument(onDidOpenTextDocument));
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor));
     context.subscriptions.push(outputChannel);
 
     onDidChangeActiveTextEditor(vscode.window.activeTextEditor);
+}
+
+function onInstallVirtualEnvironmentCommand(): void {
+    if (activeDocument && isSavedPythonDocument(activeDocument)) {
+        installVirtualEnvironment(activeDocument).then(() => {
+            if (activeDocument) {
+                onDidChangeActiveTextDocument(activeDocument, true);
+            }
+        }).catch((err) => {
+            logger.error('Failed to install virtual environment:', err);
+            vscode.window.showErrorMessage('Failed to install virtual environment:', err);
+        });
+    } else {
+        vscode.window.showErrorMessage('Unable to install virtual environment because no saved python editor is currently active.');
+    }
 }
 
 function onDidOpenTextDocument(document: vscode.TextDocument): void {

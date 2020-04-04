@@ -34,10 +34,19 @@
         "environment"
     ],
     "activationEvents": [
+        "onCommand:pythonautovenv.installVenv",
         "onLanguage:python"
     ],
     "main": "./dist/extension.js",
     "contributes": {
+        "commands": [
+            {
+                "command": "pythonautovenv.installVenv",
+                "title": "Install Virtual Environment",
+                "category": "Python Auto Venv",
+                "enablement": "editorLangId == python"
+            }
+        ],
         "configuration": {
             "title": "Python Auto Venv",
             "properties": {
@@ -45,6 +54,16 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Enables or disables this extension."
+                },
+                "pythonautovenv.pythonPath": {
+                    "type": "string",
+                    "default": "python",
+                    "description": "The path to the python executable."
+                },
+                "pythonautovenv.pipPath": {
+                    "type": "string",
+                    "default": "pip",
+                    "description": "The path to the pip executable."
                 },
                 "pythonautovenv.pipenvPath": {
                     "type": "string",
@@ -79,6 +98,19 @@
                         "requirements.txt"
                     ],
                     "description": "The files that should trigger a virtual environment being installed once detected. The order decides the priority."
+                },
+                "pythonautovenv.installVenvCommand": {
+                    "type": "string",
+                    "default": "",
+                    "description": "The command to use to install virtual environments. An empty string will use the default command, which you can read more about in the readme."
+                },
+                "pythonautovenv.installVenvCommandForFile": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "default": {},
+                    "description": "The command to use to install virtual environments per file detected. This allows you to use a different command to install a specific file configured in 'pythonautovenv.installVenvFiles' once detected."
                 }
             }
         }
