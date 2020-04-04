@@ -1,8 +1,6 @@
 import * as childProcess from 'child_process';
 import * as logger from './logger';
 
-const whitespaceRegex = /(\s+)/g;
-
 export interface ExecuteOptions extends childProcess.ExecOptions {
 }
 
@@ -34,13 +32,40 @@ export async function executeCommandBasic(command: string, options: ExecuteOptio
     }
 }
 
+export function getCommand(commandPath: string, ...args: string[]): string {
+    const escapedCommandPath = escapePath(commandPath);
+    const escapedArgs = args.map((arg) => {
+        return escapeArgument(arg);
+    });
+    return [
+        escapedCommandPath,
+        ...escapedArgs
+    ].join(' ');
+}
+
 export function escapePath(path: string): string {
     if (process.platform === 'win32') {
-        if (whitespaceRegex.test(path)) {
+        if (/(\s+)/g.test(path)) {
             return `"${path}"`;
         }
         return path;
     } else {
-        return path.replace(whitespaceRegex, '\\$1');
+        return path.replace(/(\s+)/g, '\\$1');
+    }
+}
+
+export function escapeArgument(arg: string): string {
+    if (process.platform === 'win32') {
+        if (/[^A-Za-z0-9_\/:=-]/.test(arg)) {
+            const escapedDoubleQuotes = arg.replace(/"/g, '""');
+            return `"${escapedDoubleQuotes}"`;
+        }
+        return arg;
+    } else {
+        if (/[^A-Za-z0-9_\/:=-]/.test(arg)) {
+            const escapedSingleQuotes = arg.replace(/'/g, '\\\'');
+            return `'${escapedSingleQuotes}'`;
+        }
+        return arg;
     }
 }

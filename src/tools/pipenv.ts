@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as settings from '../settings';
-import { executeCommand, escapePath } from '../commandUtils';
+import { executeCommand, executeCommandBasic, getCommand } from '../commandUtils';
 import { fileExists } from '../ioUtils';
 
 export const PIPFILE_FILENAME = 'Pipfile';
@@ -12,7 +12,8 @@ export function isPipfileFileName(fileName: string): boolean {
 }
 
 export async function getVenvPath(workspaceFolder: vscode.WorkspaceFolder, dirPath: string): Promise<string | undefined> {
-    const command = getCommand(workspaceFolder, '--venv');
+    const pipenvPath = settings.getPipenvPath(workspaceFolder);
+    const command = getCommand(pipenvPath, '--venv');
 
     try {
         const venvPath = await executeCommand(command, {
@@ -33,27 +34,34 @@ export async function getVenvPath(workspaceFolder: vscode.WorkspaceFolder, dirPa
 }
 
 export async function installVenv(workspaceFolder: vscode.WorkspaceFolder, venvProjectPath: string): Promise<void> {
+    const pipenvPath = settings.getPipenvPath(workspaceFolder);
     const pipfileLockPath = path.join(venvProjectPath, PIPFILE_LOCK_FILENAME);
     const hasLockFile = await fileExists(pipfileLockPath);
 
     let command: string;
     if (hasLockFile) {
-        command = getCommand(workspaceFolder, '--bare', 'sync', '--dev');
+        command = getCommand(pipenvPath, '--bare', 'sync', '--dev');
     } else {
-        command = getCommand(workspaceFolder, '--bare', 'install', '--dev');
+        command = getCommand(pipenvPath, '--bare', 'install', '--dev');
     }
 
-    try {
-        await executeCommand(command, {
-            cwd: venvProjectPath,
-        });
-    } catch (err) {
-        throw new Error(err.stderr || err.message);
-    }
+    await executeCommandBasic(command, {
+        cwd: venvProjectPath,
+    });
+}
+
+export async function installRequirementsFile(workspaceFolder: vscode.WorkspaceFolder, venvProjectPath: string, requirementsFilePath: string): Promise<void> {
+    const pipenvPath = settings.getPipenvPath(workspaceFolder);
+    const relativeRequirementsFilePath = path.relative(venvProjectPath, requirementsFilePath);
+    const command = getCommand(pipenvPath, 'install', '-r', relativeRequirementsFilePath);
+    await executeCommandBasic(command, {
+        cwd: venvProjectPath,
+    });
 }
 
 export async function uninstallVenv(workspaceFolder: vscode.WorkspaceFolder, venvProjectPath: string): Promise<boolean> {
-    const command = getCommand(workspaceFolder, '--rm');
+    const pipenvPath = settings.getPipenvPath(workspaceFolder);
+    const command = getCommand(pipenvPath, '--rm');
 
     try {
         await executeCommand(command, {
@@ -67,13 +75,4 @@ export async function uninstallVenv(workspaceFolder: vscode.WorkspaceFolder, ven
         }
         throw new Error(err.stderr || err.message);
     }
-}
-
-function getCommand(workspaceFolder: vscode.WorkspaceFolder, ...args: string[]): string {
-    let pipenvPath = settings.getPipenvPath(workspaceFolder);
-    pipenvPath = escapePath(pipenvPath);
-    return [
-        pipenvPath,
-        ...args
-    ].join(' ');
 }
