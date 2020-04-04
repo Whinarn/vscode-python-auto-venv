@@ -66,6 +66,19 @@
                         "venv"
                     ],
                     "description": "The names of possible virtual environment directories."
+                },
+                "pythonautovenv.installVenvFiles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "Pipfile.lock",
+                        "Pipfile",
+                        "requirements-dev.txt",
+                        "requirements.txt"
+                    ],
+                    "description": "The files that should trigger a virtual environment being installed once detected. The order decides the priority."
                 }
             }
         }

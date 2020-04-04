@@ -68,10 +68,11 @@ export async function removeDirectory(filePath: string): Promise<boolean> {
 }
 
 export async function findFileInParents(workspaceFolder: vscode.WorkspaceFolder, dirPath: string, findFileNames: string[]): Promise<string | undefined> {
-    const workspaceRootPath = workspaceFolder.uri.fsPath;
-    const workspaceRootPathWithSlash = workspaceRootPath + path.sep;
+    const workspaceResolvedPath = path.resolve(workspaceFolder.uri.fsPath);
+    const workspaceRootPath = removeTrailingDirectorySeparator(workspaceResolvedPath);
+    const workspaceRootPathWithSlash = addTrailingDirectorySeparator(workspaceRootPath);
 
-    let currentDirPath = dirPath;
+    let currentDirPath = path.resolve(dirPath);
     while (currentDirPath.startsWith(workspaceRootPathWithSlash) || currentDirPath === workspaceRootPath) {
         const filePath = await findFileInDirectory(currentDirPath, findFileNames);
         if (filePath) {
@@ -93,4 +94,20 @@ async function findFileInDirectory(dirPath: string, findFileNames: string[]): Pr
     }
 
     return undefined;
+}
+
+export function removeTrailingDirectorySeparator(dirPath: string): string {
+    if (dirPath.endsWith(path.sep)) {
+        return dirPath.substr(0, dirPath.length - 1);
+    }
+
+    return dirPath;
+}
+
+export function addTrailingDirectorySeparator(dirPath: string): string {
+    if (dirPath.endsWith(path.sep)) {
+        return dirPath;
+    }
+
+    return dirPath + path.sep;
 }

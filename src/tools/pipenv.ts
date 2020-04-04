@@ -4,7 +4,12 @@ import * as settings from '../settings';
 import { executeCommand, escapePath } from '../commandUtils';
 import { fileExists } from '../ioUtils';
 
-const PIPFILE_LOCK_FILENAME = 'Pipfile.lock';
+export const PIPFILE_FILENAME = 'Pipfile';
+export const PIPFILE_LOCK_FILENAME = 'Pipfile.lock';
+
+export function isPipfileFileName(fileName: string): boolean {
+    return (fileName === PIPFILE_FILENAME || fileName === PIPFILE_LOCK_FILENAME);
+}
 
 export async function getVenvPath(workspaceFolder: vscode.WorkspaceFolder, dirPath: string): Promise<string | undefined> {
     const command = getCommand(workspaceFolder, '--venv');

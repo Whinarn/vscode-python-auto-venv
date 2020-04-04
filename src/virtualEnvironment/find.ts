@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as settings from '../settings';
-import { fileStat, fileExists, findFileInParents, readFileContents } from '../ioUtils';
+import { fileStat, fileExists, findFileInParents, readFileContents, addTrailingDirectorySeparator } from '../ioUtils';
 import * as pipenv from '../tools/pipenv';
 
 export async function findVenvInstallFile(workspaceFolder: vscode.WorkspaceFolder, dirPath: string): Promise<string | undefined> {
-    const installVenvFiles = ['Pipfile', 'requirements-dev.txt', 'requirements.txt'];
+    const installVenvFiles = settings.getInstallVenvFiles(workspaceFolder);
     return await findFileInParents(workspaceFolder, dirPath, installVenvFiles);
 }
 
@@ -44,6 +44,14 @@ export async function findVenvPath(workspaceFolder: vscode.WorkspaceFolder, dirP
     const venvInstallFilePath = await findVenvInstallFile(workspaceFolder, dirPath);
     if (!venvInstallFilePath) {
         return undefined;
+    }
+
+    const venvInstallFileName = path.basename(venvInstallFilePath);
+    if (pipenv.isPipfileFileName(venvInstallFileName)) {
+        const venvPath = await pipenv.getVenvPath(workspaceFolder, dirPath);
+        if (venvPath) {
+            return venvPath;
+        }
     }
 
     const venvInstallDirPath = path.dirname(venvInstallFilePath);
