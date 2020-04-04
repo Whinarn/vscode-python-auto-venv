@@ -7,6 +7,7 @@ const DEFAULT_PIP_PATH = 'pip';
 const DEFAULT_PIPENV_PATH = 'pipenv';
 const DEFAULT_PREFER_PIPENV = false;
 const DEFAULT_VENV_DIR_NAMES = ['.venv', 'venv'];
+const DEFAULT_AUTO_INSTALL_VENV = false;
 const DEFAULT_INSTALL_VENV_FILES = ['Pipfile.lock', 'Pipfile', 'requirements-dev.txt', 'requirements.txt'];
 const DEFAULT_INSTALL_VENV_COMMAND = '';
 const DEFAULT_INSTALL_VENV_COMMAND_FOR_FILE = {};
@@ -43,6 +44,11 @@ export function getPreferPipenv(workspaceFolder?: vscode.WorkspaceFolder): boole
 export function getVenvDirectoryNames(workspaceFolder?: vscode.WorkspaceFolder): string[] {
     const settings = getSettings(workspaceFolder);
     return settings.get<string[]>('venvDirectoryNames', DEFAULT_VENV_DIR_NAMES);
+}
+
+export function getAutoInstallVenv(workspaceFolder?: vscode.WorkspaceFolder): boolean {
+    const settings = getSettings(workspaceFolder);
+    return settings.get<boolean>('autoInstallVenv', DEFAULT_AUTO_INSTALL_VENV);
 }
 
 export function getInstallVenvFiles(workspaceFolder?: vscode.WorkspaceFolder): string[] {

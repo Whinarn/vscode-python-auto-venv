@@ -93,6 +93,11 @@
                     ],
                     "description": "The names of possible virtual environment directories."
                 },
+                "pythonautovenv.autoInstallVenv": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If virtual environments should be installed automatically once a Pipfile or requirements.txt is detected."
+                },
                 "pythonautovenv.installVenvFiles": {
                     "type": "array",
                     "items": {

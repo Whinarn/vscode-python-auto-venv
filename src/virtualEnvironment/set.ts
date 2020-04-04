@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as settings from '../settings';
 import * as logger from '../logger';
 import { findVenvPythonPath } from './find';
+import { installVirtualEnvironment } from './install';
 import { setWorkspacePythonPath } from './pythonPath';
 
 let lastDirectoryPath: string | undefined;
@@ -30,6 +32,10 @@ export async function setVirtualEnvironment(document: vscode.TextDocument, force
             logger.info('Changed the virtual environment python path:', pythonPath);
         }
     } else {
-        logger.warn('Unable to find virtual environment under directory:', directoryPath);
+        if (settings.getAutoInstallVenv(workspaceFolder)) {
+            await installVirtualEnvironment(document);
+        } else {
+            logger.warn('Unable to find virtual environment under directory:', directoryPath);
+        }
     }
 }
