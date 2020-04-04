@@ -56,13 +56,13 @@ export function escapePath(path: string): string {
 
 export function escapeArgument(arg: string): string {
     if (process.platform === 'win32') {
-        if (/[^A-Za-z0-9_\/:=-]/.test(arg)) {
+        if (/[^A-Za-z0-9_\/:=\-\.]/.test(arg)) {
             const escapedDoubleQuotes = arg.replace(/"/g, '""');
             return `"${escapedDoubleQuotes}"`;
         }
         return arg;
     } else {
-        if (/[^A-Za-z0-9_\/:=-]/.test(arg)) {
+        if (/[^A-Za-z0-9_\/:=\-\.]/.test(arg)) {
             const escapedSingleQuotes = arg.replace(/'/g, '\\\'');
             return `'${escapedSingleQuotes}'`;
         }

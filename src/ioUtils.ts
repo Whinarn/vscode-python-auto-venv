@@ -3,18 +3,14 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export async function fileStat(filePath: string): Promise<fs.Stats | undefined> {
-    return new Promise<fs.Stats>((resolve, reject) => {
-        fs.stat(filePath, (err, stat) => {
-            if (err) {
-                if (err.code === 'ENOENT') {
-                    return resolve(undefined);
-                }
-                return reject(err);
-            }
-
-            resolve(stat);
-        });
-    });
+    try {
+        return await fs.promises.stat(filePath);
+    } catch (err) {
+        if (err.code === 'ENOENT') {
+            return undefined;
+        }
+        throw err;
+    }
 }
 
 export async function dirExists(filePath: string): Promise<boolean> {
@@ -35,16 +31,9 @@ export async function fileExists(filePath: string): Promise<boolean> {
     return stat && stat.isFile();
 }
 
-export function readFileContents(filePath: string): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-        fs.readFile(filePath, 'utf8', (err, data) => {
-            if (err) {
-                return reject(err);
-            }
-
-            resolve(data.trim());
-        });
-    });
+export async function readFileContents(filePath: string): Promise<string> {
+    const data = await fs.promises.readFile(filePath, 'utf8');
+    return data.trim();
 }
 
 export async function removeFile(filePath: string): Promise<boolean> {
@@ -56,15 +45,31 @@ export async function removeFile(filePath: string): Promise<boolean> {
     return false;
 }
 
-export async function removeDirectory(filePath: string): Promise<boolean> {
-    if (!await dirExists(filePath)) {
-        await fs.promises.rmdir(filePath, {
-            recursive: true,
-        });
+export async function removeDirectory(dirPath: string): Promise<boolean> {
+    if (await dirExists(dirPath)) {
+        await removeDirectoryWithoutCheck(dirPath);
         return true;
     }
 
     return false;
+}
+
+async function removeDirectoryWithoutCheck(dirPath: string): Promise<void> {
+    const files = await fs.promises.readdir(dirPath);
+    for (let i = 0; i < files.length; i++) {
+        const fileName = files[i];
+        const filePath = path.join(dirPath, fileName);
+        const stat = await fileStat(filePath);
+        if (stat) {
+            if (stat.isFile()) {
+                await fs.promises.unlink(filePath);
+            } else if (stat.isDirectory()) {
+                await removeDirectoryWithoutCheck(filePath);
+            }
+        }
+    }
+
+    await fs.promises.rmdir(dirPath);
 }
 
 export async function findFileInParents(workspaceFolder: vscode.WorkspaceFolder, dirPath: string, findFileNames: string[]): Promise<string | undefined> {

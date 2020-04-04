@@ -7,8 +7,9 @@ import * as venv from '../tools/venv';
 import { executeCommandBasic } from '../commandUtils';
 import * as logger from '../logger';
 import { prepareCustomCommand, CustomCommandOptions } from './commands';
-import { findVenvInstallFile } from './find';
+import { findVenvInstallFile, findVenvPythonPath } from './find';
 import { uninstallVirtualEnvironment } from './uninstall';
+import { setWorkspacePythonPath } from './pythonPath';
 
 export async function installVirtualEnvironment(document: vscode.TextDocument): Promise<void> {
     const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
@@ -38,6 +39,14 @@ export async function installVirtualEnvironment(document: vscode.TextDocument): 
         logger.info('The virtual environment was successfully installed:', venvProjectPath);
     } else {
         await installVirtualEnvironmentDefault(workspaceFolder, venvProjectPath, venvInstallFilePath);
+    }
+
+    const pythonPath = await findVenvPythonPath(workspaceFolder, venvProjectPath);
+    if (pythonPath) {
+        setWorkspacePythonPath(workspaceFolder, pythonPath);
+        logger.info('Changed the virtual environment python path:', pythonPath);
+    } else {
+        logger.error('Unable to find virtual environment after installation:', venvProjectPath);
     }
 }
 

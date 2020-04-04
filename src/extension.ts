@@ -24,11 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 function onInstallVirtualEnvironmentCommand(): void {
     if (activeDocument && isSavedPythonDocument(activeDocument)) {
-        installVirtualEnvironment(activeDocument).then(() => {
-            if (activeDocument) {
-                onDidChangeActiveTextDocument(activeDocument, true);
-            }
-        }).catch((err) => {
+        installVirtualEnvironment(activeDocument).catch((err) => {
             logger.error('Failed to install virtual environment:', err);
             vscode.window.showErrorMessage('Failed to install virtual environment:', err);
         });

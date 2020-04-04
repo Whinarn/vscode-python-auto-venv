@@ -55,6 +55,9 @@ async function removePythonPathIfWithinVenv(workspaceFolder: vscode.WorkspaceFol
     if (await isInsideVenvDirectory(venvPath, workspacePythonPath)) {
         logger.info('Resetting workspace python path due to virtual environment being uninstalled:', venvPath);
         resetWorkspacePythonPath(workspaceFolder);
+
+        // Wait 500 milliseconds in hope that the Python extension has stopped using the virtual environment
+        await new Promise((resolve) => setTimeout(resolve, 500));
     }
 }
 
@@ -69,7 +72,9 @@ async function uninstallVirtualEnvironmentDefault(workspaceFolder: vscode.Worksp
         throw new Error(`Unable to install virtual environment using unknown file: ${venvInstallFilePath}`);
     }
 
-    logger.info('The virtual environment was successfully uninstalled:', venvProjectPath);
+    if (result) {
+        logger.info('The virtual environment was successfully uninstalled:', venvProjectPath);
+    }
     return result;
 }
 
