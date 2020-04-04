@@ -33,8 +33,8 @@ export async function isVenvDirectory(dirPath: string): Promise<boolean> {
 }
 
 export async function findVenvPath(workspaceFolder: vscode.WorkspaceFolder, dirPath: string): Promise<string | undefined> {
-    const usePipenv = settings.getUsePipenv(workspaceFolder);
-    if (usePipenv) {
+    const preferPipenv = settings.getPreferPipenv(workspaceFolder);
+    if (preferPipenv) {
         const venvPath = await pipenv.getVenvPath(workspaceFolder, dirPath);
         if (venvPath) {
             return venvPath;

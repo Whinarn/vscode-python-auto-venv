@@ -46,15 +46,15 @@
                     "default": true,
                     "description": "Enables or disables this extension."
                 },
-                "pythonautovenv.usePipenv": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "If pipenv should be used to detect virtual environments."
-                },
                 "pythonautovenv.pipenvPath": {
                     "type": "string",
                     "default": "pipenv",
                     "description": "The path to the pipenv executable."
+                },
+                "pythonautovenv.preferPipenv": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If pipenv should is preferred in detecting and installing virtual environments."
                 },
                 "pythonautovenv.venvDirectoryNames": {
                     "type": "array",
