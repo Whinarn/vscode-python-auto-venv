@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { getEnable } from './settings';
-import { updateVirtualEnvironment } from './virtualEnvironment';
+import { setVirtualEnvironment } from './virtualEnvironment/set';
 import * as logger from './logger';
 
 const PYTHON_LANGUAGE_ID = 'python';
@@ -19,7 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 function onDidOpenTextDocument(document: vscode.TextDocument): void {
     if (document === activeDocument) {
-        onDidChangeActiveTextDocument(document);
+        onDidChangeActiveTextDocument(document, false);
     }
 }
 
@@ -27,20 +27,27 @@ function onDidChangeActiveTextEditor(editor: vscode.TextEditor | undefined): voi
     activeDocument = editor?.document;
 
     if (activeDocument) {
-        onDidChangeActiveTextDocument(activeDocument);
+        onDidChangeActiveTextDocument(activeDocument, false);
     }
 }
 
-function onDidChangeActiveTextDocument(document: vscode.TextDocument): void {
-    if (!document.isUntitled && document.fileName.length && document.languageId === PYTHON_LANGUAGE_ID) {
+function onDidChangeActiveTextDocument(document: vscode.TextDocument, forced: boolean): void {
+    if (isSavedPythonDocument(document)) {
         const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
         if (!workspaceFolder || !getEnable(workspaceFolder)) {
             // Skip if the document is not in a workspace, or if this extension is disabled in the workspace
             return;
         }
 
-        updateVirtualEnvironment(document);
+        setVirtualEnvironment(document, forced).catch((err) => {
+            logger.error('Failed to set virtual environment:', err);
+            vscode.window.showErrorMessage('Failed to set virtual environment:', err);
+        });
     }
+}
+
+function isSavedPythonDocument(document: vscode.TextDocument): boolean {
+    return (!document.isUntitled && document.fileName.length > 0 && document.languageId === PYTHON_LANGUAGE_ID);
 }
 
 export function deactivate() {
