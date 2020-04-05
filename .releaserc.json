@@ -4,7 +4,10 @@
         ["@semantic-release/commit-analyzer", { "preset": "angular" }],
         ["@semantic-release/release-notes-generator", { "preset": "angular" }],
         ["@semantic-release/changelog", { "preset": "angular" }],
-        ["semantic-release-vsce", { "packageVsix": "whinarn.python-auto-venv.vsix" }],
+        ["@semantic-release/exec", {
+            "prepareCmd": "npm install -g vsce && yarn package --out whinarn.python-auto-venv.vsix",
+            "publishCmd": "yarn publish-extension --packagePath whinarn.python-auto-venv.vsix"
+        }],
         ["@semantic-release/git", {
             "assets": [
                 "package.json",
