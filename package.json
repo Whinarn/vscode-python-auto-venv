@@ -34,10 +34,26 @@
         "environment"
     ],
     "activationEvents": [
+        "onCommand:pythonautovenv.installVenv",
+        "onCommand:pythonautovenv.uninstallVenv",
         "onLanguage:python"
     ],
     "main": "./dist/extension.js",
     "contributes": {
+        "commands": [
+            {
+                "command": "pythonautovenv.installVenv",
+                "title": "Install Virtual Environment",
+                "category": "Python Auto Venv",
+                "enablement": "editorLangId == python"
+            },
+            {
+                "command": "pythonautovenv.uninstallVenv",
+                "title": "Uninstall Virtual Environment",
+                "category": "Python Auto Venv",
+                "enablement": "editorLangId == python"
+            }
+        ],
         "configuration": {
             "title": "Python Auto Venv",
             "properties": {
@@ -46,15 +62,25 @@
                     "default": true,
                     "description": "Enables or disables this extension."
                 },
-                "pythonautovenv.usePipenv": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "If pipenv should be used to detect virtual environments."
+                "pythonautovenv.pythonPath": {
+                    "type": "string",
+                    "default": "python",
+                    "description": "The path to the python executable."
+                },
+                "pythonautovenv.pipPath": {
+                    "type": "string",
+                    "default": "pip",
+                    "description": "The path to the pip executable."
                 },
                 "pythonautovenv.pipenvPath": {
                     "type": "string",
                     "default": "pipenv",
                     "description": "The path to the pipenv executable."
+                },
+                "pythonautovenv.preferPipenv": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If pipenv should is preferred in detecting and installing virtual environments."
                 },
                 "pythonautovenv.venvDirectoryNames": {
                     "type": "array",
@@ -66,6 +92,50 @@
                         "venv"
                     ],
                     "description": "The names of possible virtual environment directories."
+                },
+                "pythonautovenv.autoInstallVenv": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If virtual environments should be installed automatically once a Pipfile or requirements.txt is detected."
+                },
+                "pythonautovenv.installVenvFiles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "Pipfile.lock",
+                        "Pipfile",
+                        "requirements-dev.txt",
+                        "requirements.txt"
+                    ],
+                    "description": "The files that should trigger a virtual environment being installed once detected. The order decides the priority."
+                },
+                "pythonautovenv.installVenvCommand": {
+                    "type": "string",
+                    "default": "",
+                    "description": "The command to use to install virtual environments. An empty string will use the default command, which you can read more about in the readme."
+                },
+                "pythonautovenv.installVenvCommandForFile": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "default": {},
+                    "description": "The command to use to install virtual environments per file detected. This allows you to use a different command to install a specific file configured in 'pythonautovenv.installVenvFiles' once detected."
+                },
+                "pythonautovenv.uninstallVenvCommand": {
+                    "type": "string",
+                    "default": "",
+                    "description": "The command to use to uninstall virtual environments. An empty string will use the default command, which you can read more about in the readme."
+                },
+                "pythonautovenv.uninstallVenvCommandForFile": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "default": {},
+                    "description": "The command to use to uninstall virtual environments per file detected. This allows you to use a different command to uninstall a specific file configured in 'pythonautovenv.installVenvFiles' once detected."
                 }
             }
         }
