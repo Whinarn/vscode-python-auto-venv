@@ -5,8 +5,8 @@
         ["@semantic-release/release-notes-generator", { "preset": "angular" }],
         ["@semantic-release/changelog", { "preset": "angular" }],
         ["@semantic-release/exec", {
-            "prepareCmd": "npm install -g vsce && yarn package --out whinarn.python-auto-venv.vsix",
-            "publishCmd": "yarn publish-extension --packagePath whinarn.python-auto-venv.vsix"
+            "prepareCmd": "yarn && yarn package --out whinarn.python-auto-venv.vsix",
+            "publishCmd": "yarn publish-extension --packagePath whinarn.python-auto-venv.vsix --pat ${process.env.VSCE_TOKEN}"
         }],
         ["@semantic-release/git", {
             "assets": [
