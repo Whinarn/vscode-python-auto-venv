@@ -4,6 +4,7 @@
         ["@semantic-release/commit-analyzer", { "preset": "angular" }],
         ["@semantic-release/release-notes-generator", { "preset": "angular" }],
         ["@semantic-release/changelog", { "preset": "angular" }],
+        ["@semantic-release/npm", { "npmPublish": false }],
         ["@semantic-release/exec", {
             "prepareCmd": "yarn && yarn package --out whinarn.python-auto-venv.vsix",
             "publishCmd": "yarn publish-extension --packagePath whinarn.python-auto-venv.vsix --pat ${process.env.VSCE_TOKEN}"
