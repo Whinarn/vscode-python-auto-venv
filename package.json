@@ -2,7 +2,7 @@
     "name": "python-auto-venv",
     "displayName": "Python Auto Venv",
     "description": "Automatically selects the virtual environment found in the directory of your current file.",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "publisher": "whinarn",
     "repository": {
         "type": "git",
