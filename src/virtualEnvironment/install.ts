@@ -7,7 +7,7 @@ import * as venv from '../tools/venv';
 import { executeCommandBasic } from '../commandUtils';
 import * as logger from '../logger';
 import { prepareCustomCommand, CustomCommandOptions } from './commands';
-import { findVenvInstallFile, findVenvPythonPath, findVenvExePath } from './find';
+import { findVenvInstallFile, findVenvPythonPath } from './find';
 import { uninstallVirtualEnvironment } from './uninstall';
 import { setWorkspacePythonPath } from './pythonPath';
 

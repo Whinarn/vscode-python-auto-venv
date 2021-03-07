@@ -155,7 +155,7 @@
         "package": "vsce package --yarn",
         "publish-extension": "vsce publish --yarn",
         "compile": "tsc -p ./",
-        "lint": "eslint src --ext ts",
+        "lint": "eslint src --ext .ts",
         "watch": "tsc -watch -p ./",
         "pretest": "yarn run compile && yarn run lint",
         "test": "node ./out/test/runTest.js"
