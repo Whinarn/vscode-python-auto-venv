@@ -77,10 +77,16 @@
                     "default": "pipenv",
                     "description": "The path to the pipenv executable."
                 },
+                "pythonautovenv.poetryPath": {
+                    "type": "string",
+                    "default": "poetry",
+                    "description": "The path to the poetry executable."
+                },
                 "pythonautovenv.preferPipenv": {
                     "type": "boolean",
                     "default": false,
-                    "description": "If pipenv should is preferred in detecting and installing virtual environments."
+                    "description": "If pipenv should is preferred in detecting and installing virtual environments.",
+                    "deprecationMessage": "This is no longer supported. Automatic detection based on files is now used instead."
                 },
                 "pythonautovenv.venvDirectoryNames": {
                     "type": "array",
@@ -96,7 +102,7 @@
                 "pythonautovenv.autoInstallVenv": {
                     "type": "boolean",
                     "default": false,
-                    "description": "If virtual environments should be installed automatically once a Pipfile or requirements.txt is detected."
+                    "description": "If virtual environments should be installed automatically once a requirements/dependency file is detected."
                 },
                 "pythonautovenv.installVenvFiles": {
                     "type": "array",
@@ -104,6 +110,8 @@
                         "type": "string"
                     },
                     "default": [
+                        "poetry.lock",
+                        "pyproject.toml",
                         "Pipfile.lock",
                         "Pipfile",
                         "requirements-dev.txt",
@@ -156,6 +164,7 @@
         "@types/chai": "^4.2.11",
         "@types/chai-as-promised": "^7.1.2",
         "@types/glob": "^7.1.1",
+        "@types/lodash": "^4.14.168",
         "@types/mocha": "^7.0.1",
         "@types/node": "^12.11.7",
         "@types/vscode": "^1.43.0",
@@ -165,6 +174,7 @@
         "chai-as-promised": "^7.1.1",
         "eslint": "^6.8.0",
         "glob": "^7.1.6",
+        "lodash": "^4.17.21",
         "mocha": "^7.0.1",
         "ts-loader": "^6.2.2",
         "typescript": "^3.7.5",

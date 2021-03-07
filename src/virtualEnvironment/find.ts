@@ -1,12 +1,21 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as settings from '../settings';
-import { fileStat, fileExists, findFileInParents, readFileContents, addTrailingDirectorySeparator } from '../ioUtils';
-import * as pipenv from '../tools/pipenv';
+import {
+    fileStat,
+    fileExists,
+    findFileInParents,
+    readFileContents,
+    addTrailingDirectorySeparator
+} from '../ioUtils';
+import {
+    isValidInstallVenvFile,
+    getDependencyToolVenvPathByFilePath
+} from '../tools';
 
 export async function findVenvInstallFile(workspaceFolder: vscode.WorkspaceFolder, dirPath: string): Promise<string | undefined> {
     const installVenvFiles = settings.getInstallVenvFiles(workspaceFolder);
-    return await findFileInParents(workspaceFolder, dirPath, installVenvFiles);
+    return await findFileInParents(workspaceFolder, dirPath, installVenvFiles, isValidInstallVenvFile);
 }
 
 export async function findVenvProjectPath(workspaceFolder: vscode.WorkspaceFolder, dirPath: string): Promise<string | undefined> {
@@ -40,25 +49,14 @@ export async function isInsideVenvDirectory(venvPath: string, filePath: string):
 }
 
 export async function findVenvPath(workspaceFolder: vscode.WorkspaceFolder, dirPath: string): Promise<string | undefined> {
-    const preferPipenv = settings.getPreferPipenv(workspaceFolder);
-    if (preferPipenv) {
-        const venvPath = await pipenv.getVenvPath(workspaceFolder, dirPath);
-        if (venvPath) {
-            return venvPath;
-        }
-    }
-
     const venvInstallFilePath = await findVenvInstallFile(workspaceFolder, dirPath);
     if (!venvInstallFilePath) {
         return undefined;
     }
 
-    const venvInstallFileName = path.basename(venvInstallFilePath);
-    if (pipenv.isPipfileFileName(venvInstallFileName)) {
-        const venvPath = await pipenv.getVenvPath(workspaceFolder, dirPath);
-        if (venvPath) {
-            return venvPath;
-        }
+    const dependencyToolVenvPath = await getDependencyToolVenvPathByFilePath(venvInstallFilePath, workspaceFolder, dirPath);
+    if (dependencyToolVenvPath) {
+        return dependencyToolVenvPath;
     }
 
     const venvInstallDirPath = path.dirname(venvInstallFilePath);

@@ -1,11 +1,13 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as settings from '../settings';
+import * as logger from '../logger';
 import { executeCommand, executeCommandBasic, getCommand } from '../commandUtils';
 import { fileExists } from '../ioUtils';
 
 export const PIPFILE_FILENAME = 'Pipfile';
 export const PIPFILE_LOCK_FILENAME = 'Pipfile.lock';
+export const PIPFILE_FILENAMES = [PIPFILE_FILENAME, PIPFILE_LOCK_FILENAME];
 
 export function isPipfileFileName(fileName: string): boolean {
     return (fileName === PIPFILE_FILENAME || fileName === PIPFILE_LOCK_FILENAME);
@@ -19,14 +21,10 @@ export async function getVenvPath(workspaceFolder: vscode.WorkspaceFolder, dirPa
         const venvPath = await executeCommand(command, {
             cwd: dirPath,
         });
-        if (venvPath.length) {
-            return venvPath;
-        }
-
-        return undefined;
+        return venvPath.length > 0 ? venvPath : undefined;
     } catch (err) {
-        if (err.code === 1 && typeof err.stderr === 'string' && err.stderr.toLowerCase().includes('no virtualenv')) {
-            // The venv could not be found
+        if (err.code === 1) {
+            logger.error('Failed to get pipenv environment path:', err.stderr || err.message);
             return undefined;
         }
         throw new Error(err.stderr || err.message);
@@ -69,8 +67,8 @@ export async function uninstallVenv(workspaceFolder: vscode.WorkspaceFolder, ven
         });
         return true;
     } catch (err) {
-        if (err.code === 1 && typeof err.stderr === 'string' && err.stderr.toLowerCase().includes('no virtualenv')) {
-            // The venv could not be found
+        if (err.code === 1) {
+            logger.error('Failed to get pipenv environment path:', err.stderr || err.message);
             return false;
         }
         throw new Error(err.stderr || err.message);
