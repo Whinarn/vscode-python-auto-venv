@@ -48,15 +48,6 @@ export async function installVenv(workspaceFolder: vscode.WorkspaceFolder, venvP
     });
 }
 
-export async function installRequirementsFile(workspaceFolder: vscode.WorkspaceFolder, venvProjectPath: string, requirementsFilePath: string): Promise<void> {
-    const pipenvPath = settings.getPipenvPath(workspaceFolder);
-    const relativeRequirementsFilePath = path.relative(venvProjectPath, requirementsFilePath);
-    const command = getCommand(pipenvPath, 'install', '-r', relativeRequirementsFilePath);
-    await executeCommandBasic(command, {
-        cwd: venvProjectPath,
-    });
-}
-
 export async function uninstallVenv(workspaceFolder: vscode.WorkspaceFolder, venvProjectPath: string): Promise<boolean> {
     const pipenvPath = settings.getPipenvPath(workspaceFolder);
     const command = getCommand(pipenvPath, '--rm');
