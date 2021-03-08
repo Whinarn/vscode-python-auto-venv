@@ -61,7 +61,7 @@ export async function uninstallVenv(workspaceFolder: vscode.WorkspaceFolder, ven
         return false;
     }
 
-    for (const environment in environments) {
+    for (const environment of environments) {
         const command = getCommand(poetryPath, 'env', 'remove', environment);
         try {
             await executeCommand(command, {
@@ -87,7 +87,7 @@ async function getEnvironments(workspaceFolder: vscode.WorkspaceFolder, venvProj
         const result = await executeCommand(command, {
             cwd: venvProjectPath,
         });
-        return result.split('\n').map((line) => line.trim());
+        return result.split('\n').map((line) => line.trim().split(' ')[0].trim());
     } catch (err) {
         if (err.code === 1) {
             logger.error('Failed to get poetry environments:', err.stderr || err.message);
