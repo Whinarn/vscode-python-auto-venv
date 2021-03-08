@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as settings from '../settings';
 import * as pip from '../tools/pip';
 import * as pipenv from '../tools/pipenv';
+import * as poetry from '../tools/poetry';
 import * as venv from '../tools/venv';
 import { executeCommandBasic } from '../commandUtils';
 import * as logger from '../logger';
@@ -52,7 +53,9 @@ export async function installVirtualEnvironment(document: vscode.TextDocument): 
 
 async function installVirtualEnvironmentDefault(workspaceFolder: vscode.WorkspaceFolder, venvProjectPath: string, venvInstallFilePath: string): Promise<void> {
     const venvInstallFileName = path.basename(venvInstallFilePath);
-    if (pipenv.isPipfileFileName(venvInstallFileName)) {
+    if (poetry.isPoetryFileName(venvInstallFileName)) {
+        await poetry.installVenv(workspaceFolder, venvProjectPath);
+    } else if (pipenv.isPipfileFileName(venvInstallFileName)) {
         await pipenv.installVenv(workspaceFolder, venvProjectPath);
     } else if (pip.isRequirementsFileName(venvInstallFileName)) {
         if (settings.getPreferPipenv(workspaceFolder)) {

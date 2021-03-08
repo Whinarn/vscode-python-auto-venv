@@ -1,8 +1,10 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as logger from '../logger';
 import * as settings from '../settings';
 import { fileStat, fileExists, findFileInParents, readFileContents, addTrailingDirectorySeparator } from '../ioUtils';
 import * as pipenv from '../tools/pipenv';
+import * as poetry from '../tools/poetry';
 
 export async function findVenvInstallFile(workspaceFolder: vscode.WorkspaceFolder, dirPath: string): Promise<string | undefined> {
     const installVenvFiles = settings.getInstallVenvFiles(workspaceFolder);
@@ -41,6 +43,22 @@ export async function isInsideVenvDirectory(venvPath: string, filePath: string):
 
 export async function findVenvPath(workspaceFolder: vscode.WorkspaceFolder, dirPath: string): Promise<string | undefined> {
     const preferPipenv = settings.getPreferPipenv(workspaceFolder);
+    const preferPoetry = settings.getPreferPoetry(workspaceFolder);
+    logger.info("find venv path");
+
+
+    if (preferPipenv && preferPoetry) {
+        logger.error('Both preferPipenv and preferPoetry is setted up. Please select one of them');
+        return undefined;
+    }
+
+    if (preferPoetry) {
+        const venvPath = await poetry.getVenvPath(workspaceFolder, dirPath);
+        if (venvPath) {
+            return venvPath;
+        }
+    }
+
     if (preferPipenv) {
         const venvPath = await pipenv.getVenvPath(workspaceFolder, dirPath);
         if (venvPath) {
@@ -54,6 +72,13 @@ export async function findVenvPath(workspaceFolder: vscode.WorkspaceFolder, dirP
     }
 
     const venvInstallFileName = path.basename(venvInstallFilePath);
+    if (poetry.isPoetryFileName(venvInstallFileName)) {
+        const venvPath = await poetry.getVenvPath(workspaceFolder, dirPath);
+        if (venvPath) {
+            return venvPath;
+        }
+    }
+
     if (pipenv.isPipfileFileName(venvInstallFileName)) {
         const venvPath = await pipenv.getVenvPath(workspaceFolder, dirPath);
         if (venvPath) {
