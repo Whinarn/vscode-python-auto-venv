@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { find, findIndex } from 'lodash';
+import { findIndex } from 'lodash';
 import { isRequirementsFileName } from './pip';
 import * as pipenv from './pipenv';
 import * as poetry from './poetry';
