@@ -160,6 +160,9 @@
         "pretest": "yarn run compile && yarn run lint",
         "test": "node ./out/test/runTest.js"
     },
+    "extensionDependencies": [
+        "ms-python.python"
+    ],
     "devDependencies": {
         "@types/chai": "^4.2.15",
         "@types/chai-as-promised": "^7.1.3",
