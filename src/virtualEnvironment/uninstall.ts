@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as settings from '../settings';
+import { isDependencyToolFilePath, uninstallVenvUsingDependencyTool } from '../tools';
 import * as pip from '../tools/pip';
-import * as pipenv from '../tools/pipenv';
 import { executeCommandBasic } from '../commandUtils';
 import { fileStat, removeFile, removeDirectory, readFileContents } from '../ioUtils';
 import * as logger from '../logger';
@@ -64,8 +64,9 @@ async function removePythonPathIfWithinVenv(workspaceFolder: vscode.WorkspaceFol
 async function uninstallVirtualEnvironmentDefault(workspaceFolder: vscode.WorkspaceFolder, venvProjectPath: string, venvInstallFilePath: string): Promise<boolean> {
     let result: boolean;
     const venvInstallFileName = path.basename(venvInstallFilePath);
-    if (settings.getPreferPipenv(workspaceFolder) || pipenv.isPipfileFileName(venvInstallFileName)) {
-        result = await pipenv.uninstallVenv(workspaceFolder, venvProjectPath);
+
+    if (await isDependencyToolFilePath(venvInstallFilePath)) {
+        result = await uninstallVenvUsingDependencyTool(workspaceFolder, venvProjectPath, venvInstallFilePath);
     } else if (pip.isRequirementsFileName(venvInstallFileName)) {
         result = await uninstallVirtualEnvironmentDirectory(workspaceFolder, venvProjectPath);
     } else {

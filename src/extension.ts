@@ -26,7 +26,7 @@ function onInstallVirtualEnvironmentCommand(): void {
     if (activeDocument && isSavedPythonDocument(activeDocument)) {
         installVirtualEnvironment(activeDocument).catch((err) => {
             logger.error('Failed to install virtual environment:', err);
-            vscode.window.showErrorMessage('Failed to install virtual environment:', err);
+            vscode.window.showErrorMessage('Failed to install virtual environment: ' + err.toString());
         });
     } else {
         vscode.window.showErrorMessage('Unable to install virtual environment because no saved python editor is currently active.');
@@ -41,7 +41,7 @@ function onUninstallVirtualEnvironmentCommand(): void {
             }
         }).catch((err) => {
             logger.error('Failed to uninstall virtual environment:', err);
-            vscode.window.showErrorMessage('Failed to uninstall virtual environment:', err);
+            vscode.window.showErrorMessage('Failed to uninstall virtual environment: ' + err.toString());
         });
     } else {
         vscode.window.showErrorMessage('Unable to uninstall virtual environment because no saved python editor is currently active.');
@@ -72,7 +72,7 @@ function onDidChangeActiveTextDocument(document: vscode.TextDocument, forced: bo
 
         setVirtualEnvironment(document, forced).catch((err) => {
             logger.error('Failed to set virtual environment:', err);
-            vscode.window.showErrorMessage('Failed to set virtual environment:', err);
+            vscode.window.showErrorMessage('Failed to set virtual environment: ' + err.toString());
         });
     }
 }

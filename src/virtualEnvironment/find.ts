@@ -1,12 +1,21 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as settings from '../settings';
-import { fileStat, fileExists, findFileInParents, readFileContents, addTrailingDirectorySeparator } from '../ioUtils';
-import * as pipenv from '../tools/pipenv';
+import {
+    fileStat,
+    fileExists,
+    findFileInParents,
+    readFileContents,
+    addTrailingDirectorySeparator
+} from '../ioUtils';
+import {
+    isValidInstallVenvFile,
+    getDependencyToolVenvPathByFilePath
+} from '../tools';
 
 export async function findVenvInstallFile(workspaceFolder: vscode.WorkspaceFolder, dirPath: string): Promise<string | undefined> {
     const installVenvFiles = settings.getInstallVenvFiles(workspaceFolder);
-    return await findFileInParents(workspaceFolder, dirPath, installVenvFiles);
+    return await findFileInParents(workspaceFolder, dirPath, installVenvFiles, isValidInstallVenvFile);
 }
 
 export async function findVenvProjectPath(workspaceFolder: vscode.WorkspaceFolder, dirPath: string): Promise<string | undefined> {
@@ -24,7 +33,7 @@ export async function getVenvInDirectory(workspaceFolder: vscode.WorkspaceFolder
 }
 
 export async function isVenvDirectory(dirPath: string): Promise<boolean> {
-    const pythonPath = getPythonPathInVenv(dirPath);
+    const pythonPath = getExePathInVenv(dirPath, 'python');
     if (await fileExists(pythonPath)) {
         return true;
     }
@@ -40,25 +49,14 @@ export async function isInsideVenvDirectory(venvPath: string, filePath: string):
 }
 
 export async function findVenvPath(workspaceFolder: vscode.WorkspaceFolder, dirPath: string): Promise<string | undefined> {
-    const preferPipenv = settings.getPreferPipenv(workspaceFolder);
-    if (preferPipenv) {
-        const venvPath = await pipenv.getVenvPath(workspaceFolder, dirPath);
-        if (venvPath) {
-            return venvPath;
-        }
-    }
-
     const venvInstallFilePath = await findVenvInstallFile(workspaceFolder, dirPath);
     if (!venvInstallFilePath) {
         return undefined;
     }
 
-    const venvInstallFileName = path.basename(venvInstallFilePath);
-    if (pipenv.isPipfileFileName(venvInstallFileName)) {
-        const venvPath = await pipenv.getVenvPath(workspaceFolder, dirPath);
-        if (venvPath) {
-            return venvPath;
-        }
+    const dependencyToolVenvPath = await getDependencyToolVenvPathByFilePath(venvInstallFilePath, workspaceFolder, dirPath);
+    if (dependencyToolVenvPath) {
+        return dependencyToolVenvPath;
     }
 
     const venvInstallDirPath = path.dirname(venvInstallFilePath);
@@ -67,14 +65,18 @@ export async function findVenvPath(workspaceFolder: vscode.WorkspaceFolder, dirP
 }
 
 export async function findVenvPythonPath(workspaceFolder: vscode.WorkspaceFolder, dirPath: string): Promise<string | undefined> {
+    return await findVenvExePath(workspaceFolder, dirPath, 'python');
+}
+
+export async function findVenvExePath(workspaceFolder: vscode.WorkspaceFolder, dirPath: string, exeName: string): Promise<string | undefined> {
     const venvPath = await findVenvPath(workspaceFolder, dirPath);
     if (!venvPath) {
         return undefined;
     }
 
-    const venvPythonPath = getPythonPathInVenv(venvPath);
-    if (await fileExists(venvPythonPath)) {
-        return venvPythonPath;
+    const venvExePath = getExePathInVenv(venvPath, exeName);
+    if (await fileExists(venvExePath)) {
+        return venvExePath;
     }
 
     return undefined;
@@ -108,10 +110,10 @@ async function findVenvInDirectory(dirPath: string, venvDirNames: string[], allo
     return undefined;
 }
 
-function getPythonPathInVenv(venvPath: string): string {
+function getExePathInVenv(venvPath: string, exeName: string): string {
     if (process.platform === 'win32') {
-        return path.join(venvPath, 'Scripts', 'python.exe');
+        return path.join(venvPath, 'Scripts', `${exeName}.exe`);
     } else {
-        return path.join(venvPath, 'bin', 'python');
+        return path.join(venvPath, 'bin', exeName);
     }
 }

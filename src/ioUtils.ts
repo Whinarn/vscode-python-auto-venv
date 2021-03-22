@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 
+export type ValidateFileCallback = (filePath: string) => boolean | Promise<boolean>;
+
 export async function fileStat(filePath: string): Promise<fs.Stats | undefined> {
     try {
         return await fs.promises.stat(filePath);
@@ -72,14 +74,19 @@ async function removeDirectoryWithoutCheck(dirPath: string): Promise<void> {
     await fs.promises.rmdir(dirPath);
 }
 
-export async function findFileInParents(workspaceFolder: vscode.WorkspaceFolder, dirPath: string, findFileNames: string[]): Promise<string | undefined> {
+export async function findFileInParents(
+    workspaceFolder: vscode.WorkspaceFolder,
+    dirPath: string,
+    findFileNames: string[],
+    validateFileCallback?: ValidateFileCallback
+): Promise<string | undefined> {
     const workspaceResolvedPath = path.resolve(workspaceFolder.uri.fsPath);
     const workspaceRootPath = removeTrailingDirectorySeparator(workspaceResolvedPath);
     const workspaceRootPathWithSlash = addTrailingDirectorySeparator(workspaceRootPath);
 
     let currentDirPath = path.resolve(dirPath);
     while (currentDirPath.startsWith(workspaceRootPathWithSlash) || currentDirPath === workspaceRootPath) {
-        const filePath = await findFileInDirectory(currentDirPath, findFileNames);
+        const filePath = await findFileInDirectory(currentDirPath, findFileNames, validateFileCallback);
         if (filePath) {
             return filePath;
         }
@@ -90,11 +97,22 @@ export async function findFileInParents(workspaceFolder: vscode.WorkspaceFolder,
     return undefined;
 }
 
-async function findFileInDirectory(dirPath: string, findFileNames: string[]): Promise<string | undefined> {
+async function findFileInDirectory(
+    dirPath: string,
+    findFileNames: string[],
+    validateFileCallback?: ValidateFileCallback
+): Promise<string | undefined> {
     for (let i = 0; i < findFileNames.length; i++) {
         const filePath = path.join(dirPath, findFileNames[i]);
         if (await fileExists(filePath)) {
-            return filePath;
+            if (validateFileCallback) {
+                const validateResult = await Promise.resolve(validateFileCallback(filePath));
+                if (validateResult) {
+                    return filePath;
+                }
+            } else {
+                return filePath;
+            }
         }
     }
 
