@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/Whinarn/vscode-python-auto-venv/compare/v1.1.1...v1.2.0) (2021-03-22)
+
+
+### Features
+
+* **tools:** poetry dependency tool support ([2063979](https://github.com/Whinarn/vscode-python-auto-venv/commit/2063979b317fe4f8babf8bc38724f63885699666))
+
 ## [1.1.1](https://github.com/Whinarn/vscode-python-auto-venv/compare/v1.1.0...v1.1.1) (2020-08-13)
 
 
