@@ -5,11 +5,11 @@ import { isDependencyToolFilePath, installVenvUsingDependencyTool } from '../too
 import * as pip from '../tools/pip';
 import * as venv from '../tools/venv';
 import { executeCommandBasic } from '../commandUtils';
+import { setPythonPath } from '../pythonExtension';
 import * as logger from '../logger';
 import { prepareCustomCommand, CustomCommandOptions } from './commands';
 import { findVenvInstallFile, findVenvPythonPath } from './find';
 import { uninstallVirtualEnvironment } from './uninstall';
-import { setWorkspacePythonPath } from './pythonPath';
 
 export async function installVirtualEnvironment(document: vscode.TextDocument): Promise<void> {
     const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
@@ -43,7 +43,7 @@ export async function installVirtualEnvironment(document: vscode.TextDocument): 
 
     const pythonPath = await findVenvPythonPath(workspaceFolder, venvProjectPath);
     if (pythonPath) {
-        setWorkspacePythonPath(workspaceFolder, pythonPath);
+        setPythonPath(workspaceFolder, pythonPath);
         logger.info('Changed the virtual environment python path:', pythonPath);
     } else {
         logger.error('Unable to find virtual environment after installation:', venvProjectPath);

@@ -5,10 +5,10 @@ import { isDependencyToolFilePath, uninstallVenvUsingDependencyTool } from '../t
 import * as pip from '../tools/pip';
 import { executeCommandBasic } from '../commandUtils';
 import { fileStat, removeFile, removeDirectory, readFileContents } from '../ioUtils';
+import { getPythonPath, setPythonPath } from '../pythonExtension';
 import * as logger from '../logger';
 import { prepareCustomCommand, CustomCommandOptions } from './commands';
 import { findVenvInstallFile, getVenvInDirectory, findVenvPath, isVenvDirectory, isInsideVenvDirectory } from './find';
-import { getWorkspacePythonPath, resetWorkspacePythonPath } from './pythonPath';
 
 export async function uninstallVirtualEnvironment(document: vscode.TextDocument): Promise<boolean> {
     const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
@@ -42,7 +42,7 @@ export async function uninstallVirtualEnvironment(document: vscode.TextDocument)
 }
 
 async function removePythonPathIfWithinVenv(workspaceFolder: vscode.WorkspaceFolder, venvProjectPath: string): Promise<void> {
-    const workspacePythonPath = getWorkspacePythonPath(workspaceFolder);
+    const workspacePythonPath = getPythonPath(workspaceFolder);
     if (!workspacePythonPath) {
         return;
     }
@@ -54,7 +54,7 @@ async function removePythonPathIfWithinVenv(workspaceFolder: vscode.WorkspaceFol
 
     if (await isInsideVenvDirectory(venvPath, workspacePythonPath)) {
         logger.info('Resetting workspace python path due to virtual environment being uninstalled:', venvPath);
-        resetWorkspacePythonPath(workspaceFolder);
+        setPythonPath(workspaceFolder, undefined);
 
         // Wait 500 milliseconds in hope that the Python extension has stopped using the virtual environment
         await new Promise((resolve) => setTimeout(resolve, 500));

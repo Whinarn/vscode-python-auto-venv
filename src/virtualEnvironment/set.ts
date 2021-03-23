@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as settings from '../settings';
+import { setPythonPath } from '../pythonExtension';
 import * as logger from '../logger';
 import { findVenvPythonPath } from './find';
 import { installVirtualEnvironment } from './install';
-import { setWorkspacePythonPath } from './pythonPath';
 
 let lastDirectoryPath: string | undefined;
 let lastPythonPath: string | undefined;
@@ -27,7 +27,7 @@ export async function setVirtualEnvironment(document: vscode.TextDocument, force
         if (pythonPath !== lastPythonPath) {
             lastPythonPath = pythonPath;
 
-            setWorkspacePythonPath(workspaceFolder, pythonPath);
+            setPythonPath(workspaceFolder, pythonPath);
 
             logger.info('Changed the virtual environment python path:', pythonPath);
         }

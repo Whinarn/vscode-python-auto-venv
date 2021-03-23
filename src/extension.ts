@@ -3,6 +3,7 @@ import { getEnable } from './settings';
 import { installVirtualEnvironment } from './virtualEnvironment/install';
 import { uninstallVirtualEnvironment } from './virtualEnvironment/uninstall';
 import { setVirtualEnvironment } from './virtualEnvironment/set';
+import { activatePythonExtension } from './pythonExtension';
 import * as logger from './logger';
 
 const PYTHON_LANGUAGE_ID = 'python';
@@ -19,6 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor));
     context.subscriptions.push(outputChannel);
 
+    activatePythonExtension();
     onDidChangeActiveTextEditor(vscode.window.activeTextEditor);
 }
 
