@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/Whinarn/vscode-python-auto-venv/compare/v1.2.1...v1.2.2) (2021-05-07)
+
+
+### Bug Fixes
+
+* force new deploy ([f07a2c5](https://github.com/Whinarn/vscode-python-auto-venv/commit/f07a2c5d515bb311a05d47cb433210dd0686300b))
+
 ## [1.2.1](https://github.com/Whinarn/vscode-python-auto-venv/compare/v1.2.0...v1.2.1) (2021-05-07)
 
 
