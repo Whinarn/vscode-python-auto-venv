@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/Whinarn/vscode-python-auto-venv/compare/v1.2.0...v1.2.1) (2021-05-07)
+
+
+### Bug Fixes
+
+* **deps:** update vsce dependency ([b57199a](https://github.com/Whinarn/vscode-python-auto-venv/commit/b57199ada869ecd8121d4c840384d9b563ae17e8))
+
 # [1.2.0](https://github.com/Whinarn/vscode-python-auto-venv/compare/v1.1.1...v1.2.0) (2021-03-22)
 
 
